@@ -2,4 +2,5 @@ out/
 cache/
 lib/
 .env
+.env.local
 coverage/
