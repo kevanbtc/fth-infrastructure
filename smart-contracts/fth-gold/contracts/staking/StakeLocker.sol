@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 import {AccessRoles} from "../access/AccessRoles.sol";
 import {FTHGold} from "../tokens/FTHGold.sol";
 import {FTHStakeReceipt} from "../tokens/FTHStakeReceipt.sol";
-import {IPoRAdapter} from "../oracle/ChainlinkPoRAdapter.sol";
+import {IPoRAdapter} from "../interfaces/IPoRAdapter.sol";
 
 interface IERC20 { function transferFrom(address,address,uint256) external returns(bool); }
 
