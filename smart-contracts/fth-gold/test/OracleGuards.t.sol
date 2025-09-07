@@ -5,7 +5,7 @@ import {Test} from "forge-std/Test.sol";
 import {FTHGold} from "../contracts/tokens/FTHGold.sol";
 import {FTHStakeReceipt} from "../contracts/tokens/FTHStakeReceipt.sol";
 import {StakeLocker, IERC20} from "../contracts/staking/StakeLocker.sol";
-import {IPoRAdapter} from "../contracts/oracle/ChainlinkPoRAdapter.sol";
+import {IPoRAdapter} from "../contracts/interfaces/IPoRAdapter.sol";
 import {MockUSDT} from "../contracts/mocks/MockUSDT.sol";
 import {MockPoRAdapter} from "../contracts/mocks/MockPoRAdapter.sol";
 

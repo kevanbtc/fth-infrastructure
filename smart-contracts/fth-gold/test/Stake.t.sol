@@ -8,7 +8,7 @@ import {StakeLocker, IERC20} from "../contracts/staking/StakeLocker.sol";
 import {FTHGold} from "../contracts/tokens/FTHGold.sol";
 import {FTHStakeReceipt} from "../contracts/tokens/FTHStakeReceipt.sol";
 import {MockUSDT} from "../contracts/mocks/MockUSDT.sol";
-import {IPoRAdapter} from "../contracts/oracle/ChainlinkPoRAdapter.sol";
+import {IPoRAdapter} from "../contracts/interfaces/IPoRAdapter.sol";
 import {MockPoRAdapter} from "../contracts/mocks/MockPoRAdapter.sol";
 
 contract StakeTest is Test {

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {IPoRAdapter} from "../oracle/ChainlinkPoRAdapter.sol";
+import {IPoRAdapter} from "../interfaces/IPoRAdapter.sol";
 
 contract MockPoRAdapter is IPoRAdapter {
     bool    private _healthy;
