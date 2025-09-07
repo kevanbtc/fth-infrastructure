@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {ERC20} from "openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 import {AccessRoles} from "../access/AccessRoles.sol";
 
 contract FTHStakeReceipt is ERC20, AccessRoles {
     mapping(address => bool) public locked; // non-transferable flag
+    mapping(address => bool) public transferable; // override flag for specific users
 
     constructor(address admin) ERC20("FTH Stake Receipt","FTH-SR"){
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
@@ -18,9 +19,15 @@ contract FTHStakeReceipt is ERC20, AccessRoles {
         _burn(from, amt);
     }
 
-    function _update(address from, address to, uint256 value) internal override returns (bool) {
-        // disable transfers (soulbound-like for ERC20)
-        if (from != address(0) && to != address(0)) revert("NON_TRANSFERABLE");
-        return super._update(from, to, value);
+    function setTransferable(address user, bool canTransfer) external onlyRole(ISSUER_ROLE) {
+        transferable[user] = canTransfer;
+    }
+
+    function _update(address from, address to, uint256 value) internal override {
+        // disable transfers (soulbound-like for ERC20) unless explicitly allowed
+        if (from != address(0) && to != address(0) && !transferable[from]) {
+            revert("NON_TRANSFERABLE");
+        }
+        super._update(from, to, value);
     }
 }

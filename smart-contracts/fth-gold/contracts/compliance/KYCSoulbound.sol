@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {ERC721} from "openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
 import {AccessRoles} from "../access/AccessRoles.sol";
 
 contract KYCSoulbound is ERC721, AccessRoles {
@@ -15,7 +15,7 @@ contract KYCSoulbound is ERC721, AccessRoles {
     }
 
     function mint(address to, KYCData calldata d) external onlyRole(KYC_ISSUER_ROLE) {
-        require(!_exists(uint160(to)), "Exists");
+        require(_ownerOf(uint160(to)) == address(0), "Exists");
         _safeMint(to, uint160(to));
         kycOf[to] = d; locked[to] = true;
     }

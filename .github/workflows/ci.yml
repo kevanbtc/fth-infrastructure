@@ -1,23 +1,114 @@
-name: fth-gold-ci
+name: FTH Gold RWA CI/CD
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
+
+env:
+  FOUNDRY_PROFILE: default
+
 jobs:
-  build-test:
+  lint-and-format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
-      - name: Install deps
+
+      - name: Check formatting
         run: |
           cd smart-contracts/fth-gold
-          forge install OpenZeppelin/openzeppelin-contracts@v5.0.2 --no-commit
-      - name: Build & test
+          forge fmt --check
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Install dependencies
+        run: |
+          cd smart-contracts/fth-gold
+          forge install --no-commit
+
+      - name: Build contracts
+        run: |
+          cd smart-contracts/fth-gold
+          forge build --sizes
+
+      - name: Run tests
         run: |
           cd smart-contracts/fth-gold
           forge test -vvv
+
+      - name: Generate gas report
+        run: |
+          cd smart-contracts/fth-gold
+          forge test --gas-report
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Install dependencies
+        run: |
+          cd smart-contracts/fth-gold
+          forge install --no-commit
+
+      - name: Run coverage
+        run: |
+          cd smart-contracts/fth-gold
+          forge coverage --report lcov
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./smart-contracts/fth-gold/lcov.info
+          flags: smart-contracts
+          name: smart-contracts-coverage
+
+  security-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Install dependencies
+        run: |
+          cd smart-contracts/fth-gold
+          forge install --no-commit
+
+      - name: Run Slither Analysis
+        uses: crytic/slither-action@v0.3.0
+        id: slither
+        with:
+          target: 'smart-contracts/fth-gold/'
+          slither-config: 'smart-contracts/fth-gold/slither.config.json'
+          fail-on: none
+        continue-on-error: true
