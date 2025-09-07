@@ -1,0 +1,23 @@
+name: fth-gold-ci
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+      - name: Install deps
+        run: |
+          cd smart-contracts/fth-gold
+          forge install OpenZeppelin/openzeppelin-contracts@v5.0.2 --no-commit
+      - name: Build & test
+        run: |
+          cd smart-contracts/fth-gold
+          forge test -vvv
